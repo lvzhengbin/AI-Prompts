@@ -2,6 +2,7 @@
 
 ## 英语学习闪卡 - 单词版
 
+```
 生成英语学习单词闪卡，要求如下：
 1.闪卡的背景为纯白色，内容中间部分显示为单词对应的意思（可能是动物/人物/物品，颜色使用彩色, 风格为小朋友喜欢的卡通风格），下面有单词的文案(字母全部使用小写，颜色为黑色)和单词的美式发音音标（颜色为黑色）
 2.标准A4纸的大背景，根据闪卡数量全部平均占满A4纸内容，闪卡之间不留间隙
@@ -11,11 +12,16 @@
 
 请按照上面的要求对以下单词生成英语学习闪卡
 "dog" "tiger" "Apple" "banana" "hello" "sorry"
+```
+
+### 效果示例
+![单词闪卡](/word_flash_card.png)
 
 ---
 
 ## 英语学习闪卡 - 数字互动版
 
+```
 生成儿童英语数字学习互动闪卡，整体布局为**A4纸横向打印尺寸（297mm x 210mm）**，包含以下结构：
 
 ### 顶部区域（占1/3）：
@@ -50,5 +56,21 @@
 8. 确保内容适配横向A4纸打印，布局合理分布
 
 请按照这个模板生成数字学习闪卡，数字范围从1-10，每个数字配对不同的名词类别（如：衣物、动物、水果、玩具等）。
+```
 
+---
 
+## 插图绘画上色 Promot
+
+```
+A black and white line drawing coloring illustration, suitable for direct printing on standard size (8.5x11 inch) paper, without paper borders. The overall illustration style is fresh and simple, using clear and smooth black outline lines, without shadows, grayscale, or color filling, with a pure white background for easy coloring.
+[At the same time, for the convenience of users who are not good at coloring, please generate a complete colored version in the lower right corner as a small image for reference]
+Suitable for: [6-9 year old children]
+Scene description:
+[A unicorn is walking on the grass in the forest, with bright sunshine, blue sky and white clouds]
+```
+
+### 效果示例
+![插图上色](/color_drawing.png)
+
+---
