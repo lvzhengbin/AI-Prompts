@@ -25,17 +25,25 @@ Once the user provides the parameters:
         -   4x4: Subgrids 2x2.
         -   5x5: Rows 1x5, Cols 5x1.
         -   6x6: Subgrids 2x3.
-2.  **Solvability Guarantee**: You must first generate a full valid solution and then remove numbers according to the difficulty level:
+2.  **Strict Validation (CRITICAL)**: After generating the full grid, you **MUST** perform a strict self-check before proceeding:
+    -   **Row Check**: Verify that every row contains unique numbers (1-N) with NO duplicates.
+    -   **Column Check**: Verify that every column contains unique numbers (1-N) with NO duplicates.
+    -   **Subgrid Check**: Verify that every subgrid (if applicable) contains unique numbers.
+    -   *If ANY check fails, you must discard the grid and regenerate from scratch.*
+3.  **Solvability Guarantee**: Once the full grid is validated, remove numbers according to the difficulty level:
     -   1⭐️: ~30% empty cells.
     -   5⭐️: ~75% empty cells.
-3.  **Validation**: Double-check that the remaining puzzle has a unique solution.
+    -   Ensure the remaining puzzle has a unique solution.
 4.  **Formatting**: Display the puzzle using a clear Markdown table or formatted code block. Empty cells should be represented as dots `.` or empty spaces.
 
 ### Step 3: Show Puzzle, Solution, and Answer
 Present the generated content to the user:
 1.  **The Puzzle**: Display the grid clearly.
-2.  **Solving Strategy**: Provide a brief logical hint or step-by-step approach for this specific puzzle (e.g., "Look for hidden singles in the second row").
+2.  **Solving Strategy**: Provide a brief logical hint or step-by-step approach for this specific puzzle.
 3.  **The Solution**: Provide the full correct answer in a collapsed `<details>` block or clearly labeled section.
+    -   **Pre-Display Validation**: Before showing the solution, perform the **Strict Validation** again on the final answer grid.
+    -   Check every row and column for duplicates.
+    -   If duplicates are found, do NOT display the incorrect solution; instead, re-derive the logic or regenerate the puzzle entirely.
 4.  **Confirmation**: Ask the user if they are satisfied with this puzzle or if they want to regenerate it. Do not proceed to Step 4 until the user confirms.
 
 ### Step 4: Generate Printable Card Prompt
