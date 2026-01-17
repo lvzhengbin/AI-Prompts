@@ -61,11 +61,23 @@ Once the user provides the parameters:
     -   **Column Check**: Verify that every column contains unique numbers (1-N) with NO duplicates.
     -   **Subgrid Check**: Verify that every subgrid (if applicable) contains unique numbers.
     -   *If ANY check fails, you must discard the grid and regenerate from scratch.*
-3.  **Solvability Guarantee**: Once the full grid is validated, remove numbers according to the difficulty level:
+3.  **Diagonal Pattern Check (CRITICAL)**: Verify that NO diagonal line contains all the same number.
+    -   Check all diagonal lines (both directions: ↘ and ↗).
+    -   Example of **FORBIDDEN** pattern (shift-based generation):
+        ```
+        1,2,3,4,5
+        2,3,4,5,1
+        3,4,5,1,2
+        4,5,1,2,3
+        5,1,2,3,4
+        ```
+        In this grid, each diagonal ↗ has all identical numbers (e.g., all 1s, all 2s...). This is NOT allowed.
+    -   *If any diagonal has all identical numbers, discard and regenerate.*
+4.  **Solvability Guarantee**: Once the full grid is validated, remove numbers according to the difficulty level:
     -   1⭐️: ~30% empty cells.
     -   5⭐️: ~75% empty cells.
     -   Ensure the remaining puzzle has a unique solution.
-4.  **Formatting**: Display the puzzle using a clear Markdown table or formatted code block. Empty cells should be represented as dots `.` or empty spaces.
+5.  **Formatting**: Display the puzzle using a clear Markdown table or formatted code block. Empty cells should be represented as empty spaces.
 
 ### Step 3: Show Puzzle, Solution, and Answer
 Present the generated content to the user:
