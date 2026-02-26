@@ -78,7 +78,11 @@ For each shot, specify:
 - Final frame should include CTA (Subscribe, Like, Comment, etc.)
 
 ### Output Format
-Follow the template structure in [templates/output-template.md](templates/output-template.md).
+
+The final output document MUST contain **both** formats as defined in [templates/output-template.md](templates/output-template.md):
+
+1. **JSON 结构数据** — Complete structured JSON following the `video_info` + `segments` schema. Place at the top of the document inside a `json` code block. This enables downstream tools (AI video generators, automation scripts) to parse and consume the data programmatically.
+2. **Markdown 可读文档** — Human-readable Markdown with tables, blockquotes, and visual formatting. Place after the JSON block for easy review and collaboration.
 
 ## Step 4: User Review & Refine
 
@@ -93,8 +97,9 @@ Iterate until the user is satisfied.
 
 ## Step 5: Final Output
 
-Export the final approved content as a Markdown document:
-- Follow the Markdown template in [templates/output-template.md](templates/output-template.md)
+Export the final approved content as a document containing both JSON and Markdown:
+- Follow both output formats (JSON + Markdown) defined in [templates/output-template.md](templates/output-template.md)
+- JSON block first (complete structured data), then Markdown section (human-readable)
 - Save to `assets/[topic-slug]-storyboard.md`
 - Confirm the output path with the user
 
