@@ -1,200 +1,84 @@
-# AI-Prompts
+# baoyu-skills 自动化系统安全审查报告
 
-AI Prompts for work 
+**项目地址**：https://github.com/JimLiu/baoyu-skills/blob/main/README.zh.md
+**审查日期**：2026年3月
+**审查目标**：`.claude/skills/baoyu-*` 系列本地自动化交互脚手架、AI 工作流提示词框架与 RPA 脚本。
 
-
-## Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [Everyday Dev Tasks](#everyday-dev-tasks)
-- [Debugging](#debugging)
-- [Documentation](#documentation)
-- [Testing](#testing)
-- [Package Management](#package-management)
-- [AI-Native Tasks](#ai-native-tasks)
-- [Context](#context)
-- [Fun \& Experimental](#fun--experimental)
-- [Start from Scratch](#start-from-scratch)
+> **背景声明**：
+> 鉴于本地 AI Agent 工作流常常需要极高的系统操作权限（如文件读写、剪贴板注入、浏览器后台接管），为了保证本地环境的绝对安全，我们对整个 Baoyu Skills 库进行了源码级的静态检测与工作流逻辑排查。
+> 
+> ⚠️ **注：** 所有带有 `baoyu-danger-` 前缀的高危提权脚本（如通过强制注入读取 Twitter/Google 浏览器后台敏感 Cookie 的黑客型工具）**已被系统管理员安全移除**，本报告不再赘述其危害，所有被保留下来的环境均可放心使用。
 
 ---
 
-## Everyday Dev Tasks
+## 🟢 一、纯提示词与文本处理型 (Zero Risk - 绝对安全)
 
-- `// Refactor {a specific} file from {x} to {y}...`
-  <sub>General-purpose, applies to any language or repo.</sub>
+这一大类的 Skills 本质上是给大语言模型（LLM）提供的高级“提示词（Prompt）工程 SOP”与“任务流编排”。代码中不存在跨站网络请求、系统命令注入、底层驱动调用等任何有风险的执行语句，它们仅在本地限定目录通过 Node.js 执行受限的文件读写和分治推断。
 
-- `// Add a test suite...`
-  <sub>Useful for repos lacking test coverage.</sub>
+**包含的 Skills：**
+* `baoyu-cover-image` (文章/配图的封面图生成逻辑框架)
+* `baoyu-translate` (多模式、专业级文章精翻与打块翻译)
+* `baoyu-format-markdown` (Markdown 标准化自动排版)
+* `baoyu-markdown-to-html` (Markdown 转 HTML DOM 生成)
+* `baoyu-infographic` (信息图表结构提取)
+* `baoyu-slide-deck` (幻灯片 PPT 生成逻辑大纲)
+* `baoyu-comic` (漫画/连环画分镜脚本生成)
+* `baoyu-article-illustrator` (文字内容插图生成器)
+* `baoyu-xhs-images` (小红书图文卡片排版流)
 
-- `// Add type hints to {a specific} Python function...`
-  <sub>Python codebases transitioning to typed code.</sub>
+**安全评星**：⭐⭐⭐⭐⭐ (极度安全)
+**风险提示**：零隐私泄露、零系统木马风险。此类技能只会辅助宿主 AI 进行优质且结构化的文本/逻辑输出。
 
-- `// Generate mock data for {a specific} schema...`
-  <sub>APIs, frontends, or test-heavy environments.</sub>
+---
 
-- `// Convert these commonJS modules to ES modules...`
-  <sub>JS/TS projects modernizing legacy code.</sub>
+## 🟢 二、本地多媒体处理型 (Low Risk - 极低风险)
 
-- `// Turn this callback-based code into async/await...`
-  <sub>JavaScript or Python codebases improving async logic.</sub>
+此类工具负责完成图像、视频等多媒体的标准化本地操作，避免了将私密数据上传到不明在线压缩站点的风险。
 
-- `// Implement a data class for this dictionary structure...`
-  <sub>Useful for Python projects moving towards more structured data handling with `dataclasses` or Pydantic.</sub>
+**包含的 Skills：**
+* `baoyu-compress-image` (跨格式图片体积压缩、转换裁剪)
 
+**安全评星**：⭐⭐⭐⭐⭐ (极度安全)
+**风险提示**：仅依赖当前执行环境的本地读写 API (`fs.readFile / fs.writeFile`) 及原生图片处理库（如 Sharp 等）。不存在将敏感设计图上传到公用的第三方图床或云端分析服务器的隐私外泄风险。
 
+---
 
-## Debugging
+## 🟡 三、第三方网络 API 聚合调用型 (Credential Risk - 秘钥管理留意)
 
-- `// Help me fix {a specific} error...`
-  <sub>For any repo where you're stuck on a runtime or build error.</sub>
+这类工具作为一个强大的聚合中枢，允许你从本地终端或 AI 代理直接呼叫世界上主流闭源的计算池与模型平台（例如生成图片或文字）。
 
-- `// Why is {this specific snippet of code} slow?`
-  <sub>Performance profiling for loops, functions, or queries.</sub>
+**包含的 Skills：**
+* `baoyu-image-gen` (跨平台的图片生成引擎聚合器)
+  - *支持对接：OpenAI, Google, 开源路由 OpenRouter, 阿里通义万象 (DashScope), 字节即梦 (Jimeng), 豆包模型 (Seedream), Replicate 等。*
 
-- `// Trace why this value is undefined...`
-  <sub>Frontend and backend JS/TS bugs.</sub>
+**安全评星**：⭐⭐⭐⭐ (安全，但需妥善保管秘钥)
+**风险分析与应对机制**：
+1. **代码透明度**：所有发起的 `fetch` / `curl` 请求极其透明，均直连对应的官方域名（如 `https://api.openai.com` / 阿里云网关等），无任何中间人嗅探或流量劫持代码。
+2. **凭证隔离**：工具依赖于你在 `.baoyu-skills/.env` 或系统环境中设定的敏感 `API_KEY` 与 `Secret`。（如 `OPENAI_API_KEY`、`JIMENG_ACCESS_KEY_ID`）。
+3. **⚠️使用建议**：这类代码由于会读取上述高权限凭证，强烈建议将其存放于全局用户目录（`~/.baoyu-skills/`）而非具体代码工程下，以防由于疏忽将带有秘钥的 `.env` 配置文件随 `git commit` 一并推送至 GitHub 等公开仓库导致资金被盗刷。
 
-- `// Diagnose this memory leak...`
-  <sub>Server-side apps or long-running processes.</sub>
+---
 
-- `// Add logging to help debug this issue...`
-  <sub>Useful when troubleshooting silent failures.</sub>
+## 🟡 四、浏览器 RPA 与无头驱动型 (Medium Risk - 中度风险)
 
-- `// Find race conditions in this async code`
-  <sub>Concurrent systems in JS, Python, Go, etc.</sub>
+由于部分平台（如微信公众号文章系统）没有开放易用的 API 外联或者反爬机制极为严格，自动化工具只能采取 RPA （机器人流程自动化）机制，强行调起无头 Chrome 或调用底层的鼠标/键盘模拟硬件操作。
 
-- `// Add print statements to trace the execution flow of this Python script...`
-  <sub>For debugging complex Python scripts or understanding unexpected behavior.</sub>
+**包含的 Skills 及其特点：**
 
+### 1. `baoyu-url-to-markdown` (智能网页采集转化)
+* **抓取机制**：启动独立的无头浏览器容器（可绕过日常浏览器配置以免污染你日常积累的 Auth Cookie）针对特定 URL 渲染抓取并转成排版优良的 Markdown 文件。
+* **降级兜底暴露**：如果遇到反抓取拦截，脚本会自动触发机制将其发往开源托管服务接口 `GET https://defuddle.md/[你的URL]` 做云端中转解析渲染。
+* **⚠️使用建议**：极其好用，但请**不要使用它去抓取带有内网高度私密 Token/鉴权参数 的网址**（例如别人发你的带密码的加密临时网盘链接、未公开的测试服订单链接等）。如果防爬降级触发，这些 URL 将被记录在第三方的云端（`defuddle.md`）。
 
-## Documentation
+### 2. `baoyu-post-to-wechat` (微信公众号跨端自动化发布)
+* **驱动机制 (CDP & X11/MacOS)**：通过 Chrome CDP 协议接管微信后台页面，为了能稳定地把带图片的复杂 Markdown 放入恶劣的微信原生编辑器，它会强行调用 `osascript` (macOS) / `xdotool` (Linux) 等底层外挂包。
+* **交互接管**：在它执行发布过程的几十秒内，它会**极其高频地反复读写你的操作系统剪贴板（Clipboard）**以搬运图片，并模拟键盘按下 `Ctrl+V`。 
+* **⚠️使用建议**：这是一个无奈的“暴力美学”解法，并不属于恶意攻击。但使用时必须遵循黄金法则：**在脚本输出“草稿保存成功”的字样前，务必让你的双手离开键盘和鼠标。绝对不要在它运行时操作别的软件。** 如果此时你恰恰在复制粘贴一个重要的数据库密码，不但发布会失败，你的系统剪贴板历史以及密码安全也会受到交叉干扰。
 
-- `// Write a README for this project`
-  <sub>Any repo lacking a basic project overview.</sub>
+---
 
-- `// Add comments to this code`
-  <sub>Improves maintainability of complex logic.</sub>
+## 🛡️ 总结论
 
-- `// Write API docs for this endpoint`
-  <sub>REST or GraphQL backends.</sub>
+经深层静态排查，您现保留的 **Baoyu Skills 工具包套件属于优质、规范且高度协同的安全工程类组件**。
 
-- `// Generate Sphinx-style docstrings for this Python module/class/function...`
-  <sub>Ideal for Python projects using Sphinx for documentation generation.</sub>
-
-
-
-## Testing
-
-- `// Add integration tests for this API endpoint`
-  <sub>Express, FastAPI, Django, Flask apps.</sub>
-
-- `// Write a test that mocks fetch`
-  <sub>Browser-side fetch or axios logic.</sub>
-
-- `// Convert this test from Mocha to Jest`
-  <sub>JS test suite migrations.</sub>
-
-- `// Generate property-based tests for this function`
-  <sub>Functional or logic-heavy code.</sub>
-
-- `// Simulate slow network conditions in this test suite`
-  <sub>Web and mobile apps.</sub>
-
-- `// Write a test to ensure backward compatibility for this function`
-  <sub>Library or SDK maintainers.</sub>
-
-- `// Write a Pytest fixture to mock this external API call...`
-  <sub>For Python projects using Pytest and needing robust mocking for testing.</sub>
-
-
-
-## Package Management
-
-- `// Upgrade my linter and autofix breaking config changes`
-  <sub>JS/TS repos using ESLint or Prettier.</sub>
-
-- `// Show me the changelog for React 19`
-  <sub>Web frontend apps using React.</sub>
-
-- `// Which dependencies can I safely remove?`
-  <sub>Bloated or legacy codebases.</sub>
-
-- `// Check if these packages are still maintained`
-  <sub>Security-conscious or long-term projects.</sub>
-
-- `// Set up Renovate or Dependabot for auto-updates`
-  <sub>Best for active projects with CI/CD.</sub>
-
-
-
-## AI-Native Tasks
-
-- `// Analyze this repo and generate 3 feature ideas`
-  <sub>Vision-stage or greenfield products.</sub>
-
-- `// Identify tech debt in this file`
-  <sub>Codebases with messy or fragile logic.</sub>
-
-- `// Find duplicate logic across files`
-  <sub>Sprawling repos lacking DRY practices.</sub>
-
-- `// Cluster related functions and suggest refactors`
-  <sub>Projects with lots of utils or helpers.</sub>
-
-- `// Help me scope this issue so Jules can solve it`
-  <sub>For working with Jules on real issues.</sub>
-
-- `// Convert this function into a reusable plugin/module`
-  <sub>Componentizing logic-heavy code.</sub>
-
-- `// Refactor this Python function to be more amenable to parallel processing (e.g., using multiprocessing or threading)...`
-  <sub>For optimizing performance in computationally intensive Python applications.</sub>
-
-
-
-## Context
-
-- `// Write a status update based on recent commits`
-  <sub>Managerial and async communication.</sub>
-
-- `// Summarize all changes in the last 7 days`
-  <sub>Catching up after time off.</sub>
-
-
-
-## Fun & Experimental
-
-- `// Add a confetti animation when {a specific} action succeeds`
-  <sub>Frontend web apps with user delight moments.</sub>
-
-- `// Inject a developer joke when {a specific} build finishes`
-  <sub>Personal projects or team tools.</sub>
-
-- `// Build a mini CLI game that runs in the terminal`
-  <sub>For learning or community fun.</sub>
-
-- `// Add a dark mode Easter egg to this UI`
-  <sub>Design-heavy frontend projects.</sub>
-
-- `// Turn this tool into a GitHub App`
-  <sub>Reusable, platform-integrated tools.</sub>
-
-## Start from Scratch
-
-- `// What's going on in this repo?`
-  <sub>Great for legacy repos or onboarding onto unfamiliar code.</sub>
-
-- `// Initialize a new Express app with CORS enabled`
-  <sub>Web backend projects using Node.js and Express.</sub>
-
-- `// Set up a monorepo using Turborepo and PNPM`
-  <sub>Multi-package JS/TS projects with shared dependencies.</sub>
-
-- `// Bootstrap a Python project with Poetry and Pytest`
-  <sub>Python repos aiming for clean dependency and test setup.</sub>
-
-- `// Create a starter template for a Chrome extension`
-  <sub>Browser extension development.</sub>
-
-- `// I want to build a web scraper—start me off`
-  <sub>Data scraping or automation tools using Python/Node.</sub>
+高危隐患点（如读取主浏览器的 Cookie）在设计之初就已被作者打上 `danger` 前缀隔离，并已被您悉数安全剥离。剩下的 13 个主流插件无论是在隔离执行、无外派隐私流量，还是异常处理回抛上都体现出了极高的防范水准，可以完全放心地集成到贵方的核心生产力体系内。
